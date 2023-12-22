@@ -1,0 +1,15 @@
+/home/mix/Documents/Skrrr/AlgoritmiIzborni/Graphs/bin/Debug/net7.0/Graphs
+/home/mix/Documents/Skrrr/AlgoritmiIzborni/Graphs/bin/Debug/net7.0/Graphs.deps.json
+/home/mix/Documents/Skrrr/AlgoritmiIzborni/Graphs/bin/Debug/net7.0/Graphs.runtimeconfig.json
+/home/mix/Documents/Skrrr/AlgoritmiIzborni/Graphs/bin/Debug/net7.0/Graphs.dll
+/home/mix/Documents/Skrrr/AlgoritmiIzborni/Graphs/bin/Debug/net7.0/Graphs.pdb
+/home/mix/Documents/Skrrr/AlgoritmiIzborni/Graphs/obj/Debug/net7.0/Graphs.csproj.AssemblyReference.cache
+/home/mix/Documents/Skrrr/AlgoritmiIzborni/Graphs/obj/Debug/net7.0/Graphs.GeneratedMSBuildEditorConfig.editorconfig
+/home/mix/Documents/Skrrr/AlgoritmiIzborni/Graphs/obj/Debug/net7.0/Graphs.AssemblyInfoInputs.cache
+/home/mix/Documents/Skrrr/AlgoritmiIzborni/Graphs/obj/Debug/net7.0/Graphs.AssemblyInfo.cs
+/home/mix/Documents/Skrrr/AlgoritmiIzborni/Graphs/obj/Debug/net7.0/Graphs.csproj.CoreCompileInputs.cache
+/home/mix/Documents/Skrrr/AlgoritmiIzborni/Graphs/obj/Debug/net7.0/Graphs.dll
+/home/mix/Documents/Skrrr/AlgoritmiIzborni/Graphs/obj/Debug/net7.0/refint/Graphs.dll
+/home/mix/Documents/Skrrr/AlgoritmiIzborni/Graphs/obj/Debug/net7.0/Graphs.pdb
+/home/mix/Documents/Skrrr/AlgoritmiIzborni/Graphs/obj/Debug/net7.0/Graphs.genruntimeconfig.cache
+/home/mix/Documents/Skrrr/AlgoritmiIzborni/Graphs/obj/Debug/net7.0/ref/Graphs.dll
