@@ -3,6 +3,7 @@ namespace Graphs;
 class GraphNode
 {
     public int Value { get; set; }
+    public int Status { get; set; }
     public GraphNode? Next { get; set; }
     public GraphEdge? Adj { get; set; }
 
@@ -11,5 +12,13 @@ class GraphNode
         Value = 0;
         Next = null;
         Adj = null;    
+        Status = 0;
+    }
+    public GraphNode(int value)
+    {
+        this.Value = value;
+        Next = null;
+        Adj = null;    
+        Status = 0;
     }
 }

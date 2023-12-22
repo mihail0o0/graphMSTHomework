@@ -88,7 +88,7 @@ class LinkedLista<T>
 
         while (toDelete != null)
         {
-            if (EqualityComparer<T>.Default.Equals(toDelete.Data, Data))
+            if (EqualityComparer<T>.Default.Equals(Data, toDelete.Data))
             {
                 RemoveNode(toDelete, prev);
                 return;

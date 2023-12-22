@@ -1,6 +1,0 @@
-namespace Graphs;
-
-class Edges
-{
- 
-}
