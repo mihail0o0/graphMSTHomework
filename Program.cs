@@ -14,11 +14,13 @@ class Program
 
         g.AddEdge(1, 2);
         g.AddEdge(2, 3);
+        g.AddEdge(4, 5);
         g.AddEdge(2, 4);
-        g.AddEdge(2, 5);
 
-        // g.RemoveNode(2);
-
-        g.Print();
+        g.PrintAll();
+        System.Console.WriteLine();
+        g.RemoveNode(2);
+        System.Console.WriteLine();
+        g.PrintAll();
     }
 }

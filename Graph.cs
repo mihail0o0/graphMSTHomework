@@ -1,4 +1,6 @@
 using System.Collections;
+using System.Net.NetworkInformation;
+using System.Runtime.Versioning;
 
 namespace Graphs;
 
@@ -54,12 +56,13 @@ class Graph : IEnumerable {
 
         if (node1.Adj == null) {
             node1.Adj = newEdge1;
-            return;
+            goto secondNode;
         }
 
         newEdge1.Link = node1.Adj;
         node1.Adj = newEdge1;
 
+    secondNode:
 
         if (node2.Adj == null) {
             node2.Adj = newEdge2;
@@ -88,46 +91,51 @@ class Graph : IEnumerable {
 
         if (toDel == null) return;
 
-        var edz = toDel.Adj;
-        while (edz != null) {
-            var tmp = edz.Link;
+        // delete reflections
+        foreach (GraphEdge edz in toDel) {
+            var reflectionStart = edz.Dest!.Adj;
+            var reflection = reflectionStart;
+            var preFlection = reflectionStart;
 
-            var reflectionEdz = edz.Dest!.Adj;
-            // del edge from head
-            if (reflectionEdz!.Dest == toDel) {
-                var secTmp = reflectionEdz;
-                reflectionEdz = reflectionEdz.Link;
-                secTmp!.Link = null;
+            while (reflection != null) {
+                if (reflection.Dest == toDel) {
+                    if (reflection == reflectionStart) {
+                        if (reflectionStart.Link == null) {
+                            edz.Dest!.Adj = null;
+                            break;
+                        }
 
-                edz.Link = null;
-                edz = tmp;
-                continue;
+                        var tmp = reflectionStart.Link;
+                        reflectionStart.Link = null;
+                        reflectionStart = tmp;
+                        reflection = tmp;
+                        preFlection = tmp;
+                        continue;
+                    }
+
+                    preFlection!.Link = reflection.Link;
+                    reflection.Link = null;
+                    reflection = preFlection.Link;
+                    continue;
+                }
+
+                preFlection = reflection;
+                reflection = reflection.Link;
             }
-
-            // del from any place
-            var prevReflecitonEdz = reflectionEdz;
-
-            while (reflectionEdz != null) {
-                if (reflectionEdz.Dest == toDel) break;
-                prevReflecitonEdz = reflectionEdz;
-                reflectionEdz = reflectionEdz.Link;
-            }
-
-            if (reflectionEdz == null) {
-                edz.Link = null;
-                edz = tmp;
-                continue;
-            }
-            prevReflecitonEdz.Link = reflectionEdz.Link;
-            reflectionEdz.Link = null;
-
-
-            edz.Link = null;
-            edz = tmp;
         }
-    }
 
-    // brisi poteg
+        toDel.Adj = null;
+
+        if (toDel == Start) {
+            var tmp = Start.Next;
+            Start.Next = null;
+            Start = tmp;
+            return;
+        }
+
+        prevToDel.Next = toDel.Next;
+        toDel.Next = null;
+    }
 
     // stavi status svim cvorevima
     public void SetAllStatuses(int value) {
@@ -156,41 +164,49 @@ class Graph : IEnumerable {
 
             System.Console.WriteLine(elem.Value);
 
-            foreach(GraphEdge edz in elem) {
+            foreach (GraphEdge edz in elem) {
                 if (edz.Dest!.Status == 0) {
                     edz.Dest!.Status = 1;
                     stejk.Push(edz.Dest);
                 }
             }
         }
+    }
 
+    public void PrintAll() {
+        foreach (GraphNode nod in this) {
+            System.Console.Write($"{nod.Value} -> ");
+            foreach (GraphEdge edz in nod) {
+                System.Console.Write($"{edz.Weight} to {edz.Dest!.Value}, ");
+            }
+
+            System.Console.WriteLine();
+        }
     }
 
     public IEnumerator GetEnumerator() {
         return new GraphEnumerator(Start);
     }
 
-    public class GraphEnumerator : IEnumerator
-    {
+    public class GraphEnumerator : IEnumerator {
         public GraphNode? Start;
-        public GraphNode? Current {get; private set;}
+        public GraphNode? Current { get; private set; }
 
         object IEnumerator.Current => Current!;
 
-        public GraphEnumerator(GraphNode? Start)
-        {
-            this.Start = Start;   
+        public GraphEnumerator(GraphNode? Start) {
+            this.Start = Start;
             Current = null;
         }
 
         public bool MoveNext() {
-            if(Start == null) return false;
+            if (Start == null) return false;
 
-            if(Current == null){
+            if (Current == null) {
                 Current = Start;
                 return true;
             }
-            if(Current.Next == null) return false;
+            if (Current.Next == null) return false;
 
             Current = Current.Next;
             return true;
