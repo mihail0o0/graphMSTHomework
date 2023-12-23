@@ -17,7 +17,7 @@ class Program
         g.AddEdge(2, 4);
         g.AddEdge(2, 5);
 
-        g.RemoveNode(2);
+        // g.RemoveNode(2);
 
         g.Print();
     }

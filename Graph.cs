@@ -1,10 +1,8 @@
-using System.Data;
-using System.Reflection.Metadata.Ecma335;
-using System.Transactions;
+using System.Collections;
 
 namespace Graphs;
 
-class Graph {
+class Graph : IEnumerable {
     public GraphNode? Start { get; set; }
 
     // dodaj cvor
@@ -142,7 +140,6 @@ class Graph {
         }
     }
 
-
     // printaj
     public void Print() {
         if (Start == null) return;
@@ -155,24 +152,52 @@ class Graph {
         while (stejk.IsEmpty() == false) {
             var elem = stejk.Pop();
             if (elem == null) return;
-
             elem.Status = 2;
 
-            // ob
             System.Console.WriteLine(elem.Value);
 
-            var edz = elem.Adj;
-
-            while (edz != null) {
+            foreach(GraphEdge edz in elem) {
                 if (edz.Dest!.Status == 0) {
                     edz.Dest!.Status = 1;
                     stejk.Push(edz.Dest);
                 }
-
-                edz = edz.Link;
             }
         }
 
     }
 
+    public IEnumerator GetEnumerator() {
+        return new GraphEnumerator(Start);
+    }
+
+    public class GraphEnumerator : IEnumerator
+    {
+        public GraphNode? Start;
+        public GraphNode? Current {get; private set;}
+
+        object IEnumerator.Current => Current!;
+
+        public GraphEnumerator(GraphNode? Start)
+        {
+            this.Start = Start;   
+            Current = null;
+        }
+
+        public bool MoveNext() {
+            if(Start == null) return false;
+
+            if(Current == null){
+                Current = Start;
+                return true;
+            }
+            if(Current.Next == null) return false;
+
+            Current = Current.Next;
+            return true;
+        }
+
+        public void Reset() {
+            Current = Start;
+        }
+    }
 }
