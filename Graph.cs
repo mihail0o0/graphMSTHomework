@@ -124,6 +124,9 @@ class Graph : IEnumerable {
             }
         }
 
+        PrintAll();
+
+        toDel.Adj!.Link = null;
         toDel.Adj = null;
 
         if (toDel == Start) {
@@ -177,12 +180,74 @@ class Graph : IEnumerable {
         foreach (GraphNode nod in this) {
             System.Console.Write($"{nod.Value} -> ");
             foreach (GraphEdge edz in nod) {
-                System.Console.Write($"{edz.Weight} to {edz.Dest!.Value}, ");
+                System.Console.Write($"{edz.Weight} to {edz.Dest!.Value} | ");
             }
 
             System.Console.WriteLine();
         }
     }
+
+    public Graph? Prime() {
+
+        Graph MST = new();
+        BinomialHeap bh = new();
+        Dictionary<Tuple<GraphNode, GraphNode>, BinomialNode> edgesInHeap = new();
+        Dictionary<Tuple<GraphNode, int>, GraphNode> parents = new();
+        int addedEdges = 0;
+
+
+        if(Start == null) return null;
+
+        var cn = Start;
+        while(cn != null){
+            addedEdges++;
+            cn = cn.Next;
+        }
+        System.Console.WriteLine($"Broj Noda je {addedEdges}");
+
+        MST.AddNode(Start.Value);
+
+
+
+
+        while(addedEdges != 1000000){
+            BinomialNode? currNode = null;
+            if(bh.IsEmpty() == true){
+                currNode = new BinomialNode(0, Start);
+            }
+            else{
+                currNode = bh.ExtractMinimum();
+            }
+
+            MST.AddNode(currNode.value!.Value);
+            parents.TryGetValue(Tuple.Create(currNode.value, currNode.key), out GraphNode? parrentNode);
+            parrentNode ??= Start;
+            System.Console.WriteLine($"Parent {parrentNode.Value}");
+            MST.AddEdge(parrentNode.Value, currNode.value.Value, (uint)currNode.key);
+            addedEdges--;
+
+            if(currNode?.key == null) continue;
+
+            foreach (GraphEdge? item in currNode.value!)
+            {
+                System.Console.WriteLine(item?.Dest?.Value);
+                if(item == null || item.Dest == null) continue;
+                if(edgesInHeap.TryGetValue(Tuple.Create(currNode.value, item.Dest), out BinomialNode? nadjen ) == true){
+                    if(nadjen.key > item.Weight){
+                        nadjen.key = (int)item.Weight;
+                    }
+                    parents[Tuple.Create(item.Dest, (int)item.Weight)] = currNode.value;
+                }
+                else{
+                    var inserted = bh.Insert((int)item.Weight, currNode.value);
+                    edgesInHeap.Add(Tuple.Create(currNode.value, item.Dest), inserted);
+                    parents.Add(Tuple.Create(item.Dest, (int)item.Weight), currNode.value);
+                }
+            }
+        }
+        
+        return MST;
+    } 
 
     public IEnumerator GetEnumerator() {
         return new GraphEnumerator(Start);
@@ -215,5 +280,6 @@ class Graph : IEnumerable {
         public void Reset() {
             Current = Start;
         }
+
     }
 }

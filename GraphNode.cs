@@ -43,7 +43,7 @@ class GraphNode : IEnumerable
 
         public bool MoveNext() {
             if(Adj == null) return false;
-            
+
             if(Current == null) {
                 Current = Adj;
                 return true;
