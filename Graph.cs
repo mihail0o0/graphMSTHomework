@@ -210,10 +210,10 @@ class Graph : IEnumerable {
 
 
 
-        while(addedEdges != 1000000){
+        while(addedEdges != 0){
             BinomialNode? currNode = null;
             if(bh.IsEmpty() == true){
-                currNode = new BinomialNode(0, Start);
+                currNode = new BinomialNode(100000, Start);
             }
             else{
                 currNode = bh.ExtractMinimum();
@@ -230,15 +230,17 @@ class Graph : IEnumerable {
 
             foreach (GraphEdge? item in currNode.value!)
             {
-                System.Console.WriteLine(item?.Dest?.Value);
                 if(item == null || item.Dest == null) continue;
+
                 if(edgesInHeap.TryGetValue(Tuple.Create(currNode.value, item.Dest), out BinomialNode? nadjen ) == true){
+                    System.Console.WriteLine("Nadjen");
                     if(nadjen.key > item.Weight){
                         nadjen.key = (int)item.Weight;
                     }
                     parents[Tuple.Create(item.Dest, (int)item.Weight)] = currNode.value;
                 }
                 else{
+                    System.Console.WriteLine("Ubacen");
                     var inserted = bh.Insert((int)item.Weight, currNode.value);
                     edgesInHeap.Add(Tuple.Create(currNode.value, item.Dest), inserted);
                     parents.Add(Tuple.Create(item.Dest, (int)item.Weight), currNode.value);
