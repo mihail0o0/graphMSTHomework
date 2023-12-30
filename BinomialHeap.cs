@@ -91,6 +91,7 @@ class BinomialHeap {
         if (this.head != null || newHeap.head != null)
             head = this.Union(newHeap).head;
 
+
         // System.Console.WriteLine("After Union");
         // this.PrintHeap();
         // System.Console.WriteLine();
@@ -99,11 +100,12 @@ class BinomialHeap {
     public void IncreasePriority(int newKey) {
         throw new NotImplementedException();
     }
-    public void DecreasePriority(BinomialNode toDecrease, int newKey) {
+    public void DekrizMiDer(BinomialNode toDecrease, int newKey, Dictionary<GraphNode, BinomialNode> inHeap) {
         if (toDecrease.key < newKey) {
             Console.WriteLine("Kljuc je vec manji");
             return;
         }
+        var toRet = toDecrease;
         toDecrease.key = newKey;
 
         // Perform necessary adjustments in the heap structure
@@ -111,13 +113,17 @@ class BinomialHeap {
         BinomialNode? parrent = current.parent;
 
         while (parrent != null && current.key < parrent.key) {
-            var tmpKey = parrent.key;
+            int tmpKey = parrent.key;
             parrent.key = current.key;
             current.key = tmpKey;
 
-            var tmpValue = parrent.value;
+            GraphNode? tmpValue = parrent.value;
             parrent.value = current.value;
             current.value = tmpValue;
+
+            BinomialNode inHeapTmp = inHeap[current.value];
+            inHeap[current.value] = inHeap[parrent.value];
+            inHeap[parrent.value] = inHeapTmp;
 
             // Move upward in the heap
             current = parrent;
@@ -177,20 +183,21 @@ class BinomialHeap {
                 continue;
             }
             BinomialNode? theOneAfterChaos = current.next.next;
-            System.Console.WriteLine("Bifor mrdz");
-            mergedHeap.PrintHeap();
+            BinomialNode? theOneBeforeChaos = current.previous;
+            //System.Console.WriteLine("Bifor mrdz");
+            //mergedHeap.PrintHeap();
 
 
             BinomialNode newRoot = BinomialTree.Merge(current, current.next);
-            System.Console.WriteLine("After mrdz");
-            newRoot.Print();
-            System.Console.WriteLine();
-            if (current.previous == null) {
+            //System.Console.WriteLine("After mrdz");
+            //newRoot.Print();
+            //System.Console.WriteLine();
+            if (theOneBeforeChaos == null) {
                 mergedHeap.head = newRoot;
                 newRoot.previous = null;
             }
             else {
-                current.previous.next = newRoot;
+                theOneBeforeChaos.next = newRoot;
                 newRoot.previous = current.previous;
             }
 

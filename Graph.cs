@@ -217,17 +217,17 @@ class Graph : IEnumerable {
         }
     }
 
-    public Graph? Prime(int startingNode) {
+    public Graph Prime(int startingNode) {
 
         Graph MST = new();
         BinomialHeap bh = new();
         //Dictionary<Tuple<GraphNode, GraphNode>, BinomialNode> edgesInHeap = new();
         Dictionary<GraphNode, BinomialNode> inHeap = new();
 
-        if (Start == null) return null;
+        if (Start == null) throw new Exception("Prazan graf");
 
         SetAllStatuses(0);
-
+        BinomialNode toWatch;
         foreach (GraphNode nod in this) {
             System.Console.WriteLine(nod.Value);
             if (nod.Value == startingNode) {
@@ -237,6 +237,9 @@ class Graph : IEnumerable {
             else {
                 var inserted = bh.Insert(int.MaxValue, nod);
                 inHeap.Add(nod, inserted);
+                if (nod.Value == 3) {
+                    toWatch = inHeap[nod];
+                }
             }
 
             MST.AddNode(nod.Value);
@@ -246,6 +249,7 @@ class Graph : IEnumerable {
             var bhExt = bh.ExtractMinimum();
             GraphNode curMin = bhExt.value!;
             int graphWeight = bhExt.key;
+            curMin.Status = 1;
             // System.Console.WriteLine($"{curMin.Value}: ");
             //bh.PrintHeap();
             // System.Console.WriteLine("+");
@@ -254,8 +258,8 @@ class Graph : IEnumerable {
                 BinomialNode? nodeInBh = inHeap!.GetValueOrDefault(edz.Dest);
 
                 if (nodeInBh == null) continue;
-                if (edz.Dest!.Status == 0 && edz.Weight < nodeInBh.key) {
-                    bh.DecreasePriority(nodeInBh, (int)edz.Weight);
+                if (edz.Dest?.Status == 0 && edz.Weight < nodeInBh.key) {
+                    bh.DekrizMiDer(nodeInBh, (int)edz.Weight, inHeap);
 
                     var nodeInMst = MST.FindNode(edz.Dest!.Value);
 
