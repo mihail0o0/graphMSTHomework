@@ -1,6 +1,9 @@
 using System.Collections;
+using System.ComponentModel;
 using System.Net.NetworkInformation;
 using System.Runtime.Versioning;
+
+using Microsoft.VisualBasic;
 
 namespace Graphs;
 
@@ -8,16 +11,17 @@ class Graph : IEnumerable {
     public GraphNode? Start { get; set; }
 
     // dodaj cvor
-    public void AddNode(int value) {
+    public GraphNode? AddNode(int value) {
         var newNode = new GraphNode(value);
 
         if (Start == null) {
             Start = newNode;
-            return;
+            return null;
         }
 
         newNode.Next = Start;
         Start = newNode;
+        return newNode;
     }
 
     // dodaj poteg
@@ -71,6 +75,32 @@ class Graph : IEnumerable {
 
         newEdge2.Link = node2.Adj;
         node2.Adj = newEdge2;
+    }
+
+    public GraphNode? FindNode(int val1) {
+        foreach (GraphNode nod in this) {
+            if (nod.Value == val1) return nod;
+        }
+        return null;
+    }
+
+    public GraphEdge? FindEdge(int val1, int val2) {
+        var nod1 = Start;
+
+        while (nod1 != null) {
+            if (nod1.Value == val1) break;
+            nod1 = nod1.Next;
+        }
+
+        if (nod1 == null) return null;
+
+        foreach (GraphEdge edz in nod1!) {
+            if (edz.Dest!.Value == val2) {
+                return edz;
+            }
+        }
+
+        return null;
     }
 
 
@@ -180,76 +210,63 @@ class Graph : IEnumerable {
         foreach (GraphNode nod in this) {
             System.Console.Write($"{nod.Value} -> ");
             foreach (GraphEdge edz in nod) {
-                System.Console.Write($"{edz.Weight} to {edz.Dest!.Value} | ");
+                System.Console.Write($"to {edz.Dest?.Value} : {edz.Weight} | ");
             }
 
             System.Console.WriteLine();
         }
     }
 
-    public Graph? Prime() {
+    public Graph? Prime(int startingNode) {
 
         Graph MST = new();
         BinomialHeap bh = new();
-        Dictionary<Tuple<GraphNode, GraphNode>, BinomialNode> edgesInHeap = new();
-        Dictionary<Tuple<GraphNode, int>, GraphNode> parents = new();
-        int addedEdges = 0;
+        //Dictionary<Tuple<GraphNode, GraphNode>, BinomialNode> edgesInHeap = new();
+        Dictionary<GraphNode, BinomialNode> inHeap = new();
 
+        if (Start == null) return null;
 
-        if(Start == null) return null;
+        SetAllStatuses(0);
 
-        var cn = Start;
-        while(cn != null){
-            addedEdges++;
-            cn = cn.Next;
+        foreach (GraphNode nod in this) {
+            System.Console.WriteLine(nod.Value);
+            if (nod.Value == startingNode) {
+                var inserted = bh.Insert(0, nod);
+                inHeap.Add(nod, inserted);
+            }
+            else {
+                var inserted = bh.Insert(int.MaxValue, nod);
+                inHeap.Add(nod, inserted);
+            }
+
+            MST.AddNode(nod.Value);
         }
-        System.Console.WriteLine($"Broj Noda je {addedEdges}");
 
-        MST.AddNode(Start.Value);
+        while (bh.IsEmpty() == false) {
+            var bhExt = bh.ExtractMinimum();
+            GraphNode curMin = bhExt.value!;
+            int graphWeight = bhExt.key;
+
+            curMin.Status = 1;
 
 
+            foreach (GraphEdge edz in curMin) {
+                BinomialNode? nodeInBh = inHeap!.GetValueOrDefault(edz.Dest);
+                if (nodeInBh == null) continue;
+                if (edz.Dest!.Status == 0 && edz.Weight < nodeInBh.key) {
+                    bh.DecreasePriority(nodeInBh, (int)edz.Weight);
 
+                    var nodeInMst = MST.FindNode(edz.Dest!.Value);
 
-        while(addedEdges != 0){
-            BinomialNode? currNode = null;
-            if(bh.IsEmpty() == true){
-                currNode = new BinomialNode(100000, Start);
-            }
-            else{
-                currNode = bh.ExtractMinimum();
-            }
-
-            MST.AddNode(currNode.value!.Value);
-            parents.TryGetValue(Tuple.Create(currNode.value, currNode.key), out GraphNode? parrentNode);
-            parrentNode ??= Start;
-            System.Console.WriteLine($"Parent {parrentNode.Value}");
-            MST.AddEdge(parrentNode.Value, currNode.value.Value, (uint)currNode.key);
-            addedEdges--;
-
-            if(currNode?.key == null) continue;
-
-            foreach (GraphEdge? item in currNode.value!)
-            {
-                if(item == null || item.Dest == null) continue;
-
-                if(edgesInHeap.TryGetValue(Tuple.Create(currNode.value, item.Dest), out BinomialNode? nadjen ) == true){
-                    System.Console.WriteLine("Nadjen");
-                    if(nadjen.key > item.Weight){
-                        nadjen.key = (int)item.Weight;
-                    }
-                    parents[Tuple.Create(item.Dest, (int)item.Weight)] = currNode.value;
-                }
-                else{
-                    System.Console.WriteLine("Ubacen");
-                    var inserted = bh.Insert((int)item.Weight, currNode.value);
-                    edgesInHeap.Add(Tuple.Create(currNode.value, item.Dest), inserted);
-                    parents.Add(Tuple.Create(item.Dest, (int)item.Weight), currNode.value);
+                    nodeInMst!.Adj ??= new GraphEdge();
+                    nodeInMst.Adj.Dest = MST.FindNode(curMin.Value);
+                    nodeInMst.Adj.Weight = edz.Weight;
                 }
             }
         }
-        
+
         return MST;
-    } 
+    }
 
     public IEnumerator GetEnumerator() {
         return new GraphEnumerator(Start);

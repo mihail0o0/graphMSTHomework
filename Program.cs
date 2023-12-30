@@ -1,4 +1,6 @@
-﻿namespace Graphs;
+﻿using System.Numerics;
+
+namespace Graphs;
 class Program {
     static void Main(string[] args) {
         Graph graph = new();
@@ -7,41 +9,41 @@ class Program {
             graph.AddNode(i);
         }
         graph.AddEdge(0, 1, 4);
-        graph.AddEdge(1, 2, 8);
-        graph.AddEdge(2, 3, 7);
-        graph.AddEdge(3, 4, 9);
-        graph.AddEdge(4, 5, 10);
-        graph.AddEdge(5, 6, 2);
-        graph.AddEdge(6, 7, 1);
-        graph.AddEdge(7, 0, 8);
+        graph.AddEdge(0, 7, 8);
         graph.AddEdge(1, 7, 11);
-        graph.AddEdge(2, 8, 2);
-        graph.AddEdge(2, 5, 4);
-        graph.AddEdge(3, 5, 14);
-        graph.AddEdge(6, 8, 6);
+        graph.AddEdge(1, 2, 8);
+        graph.AddEdge(7, 6, 1);
         graph.AddEdge(7, 8, 7);
+        graph.AddEdge(2, 8, 2);
+        graph.AddEdge(8, 6, 6);
+        graph.AddEdge(2, 3, 7);
+        graph.AddEdge(2, 5, 4);
+        graph.AddEdge(6, 5, 2);
+        graph.AddEdge(3, 5, 14);
+        graph.AddEdge(3, 4, 9);
+        graph.AddEdge(5, 4, 10);
 
         graph.PrintAll();
         System.Console.WriteLine("------------------------------");
-        var newGraph = graph.Prime();
+        var newGraph = graph.Prime(0);
         newGraph.PrintAll();
 
-        //g.PrintAll();
 
         // BinomialHeap bh = new();
-        // bh.Insert(10);
+        // bh.Insert(3);
+        // bh.Insert(1);
+        // bh.Insert(5);
 
-        // Dictionary<Tuple<GraphNode, GraphNode>, BinomialNode> EdgesInHeap = new();
+        // bh.PrintHeap();
 
-        // EdgesInHeap.Add(Tuple.Create(g.Start, g.Start.Next), bh.Minimum());
-
-        // if(EdgesInHeap.ContainsKey((g.Start, g.Start.Next))){
-        // System.Console.WriteLine(EdgesInHeap.TryGetValue(new EdgeWrapper(g.Start, g.Start.Next), out BinomialNode val));
-        // System.Console.WriteLine(val);
-        // }
-        // else{
-        // System.Console.WriteLine("Jao mame");
-        // }
-
+        // System.Console.WriteLine(bh.ExtractMinimum().key);
+        // System.Console.WriteLine();
+        // bh.PrintHeap();
+        // System.Console.WriteLine(bh.ExtractMinimum().key);
+        // System.Console.WriteLine();
+        // bh.PrintHeap();
+        // System.Console.WriteLine(bh.ExtractMinimum().key);
+        // System.Console.WriteLine();
+        // bh.PrintHeap();
     }
 }
