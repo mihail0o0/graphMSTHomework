@@ -34,4 +34,25 @@ class BinomialNode {
         next = null;
         children = new();
     }
+    public void Print(BinomialNode? root = null, string indent = "", bool last = true) {
+        if (this == null) return;
+        root ??= this;
+
+        Console.Write(indent);
+        if (last) {
+            Console.Write("\\-");
+            indent += "  ";
+        }
+        else {
+            Console.Write("|-");
+            indent += "| ";
+        }
+
+        Console.WriteLine($"{root.key} {root.value!.Value}");
+
+        for (int i = 0; i < root.children.Count; i++) {
+            Print(root.children[i], indent, i == root.children.Count - 1);
+        }
+
+    }
 }

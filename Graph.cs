@@ -246,12 +246,13 @@ class Graph : IEnumerable {
             var bhExt = bh.ExtractMinimum();
             GraphNode curMin = bhExt.value!;
             int graphWeight = bhExt.key;
-
-            curMin.Status = 1;
-
+            // System.Console.WriteLine($"{curMin.Value}: ");
+            //bh.PrintHeap();
+            // System.Console.WriteLine("+");
 
             foreach (GraphEdge edz in curMin) {
                 BinomialNode? nodeInBh = inHeap!.GetValueOrDefault(edz.Dest);
+
                 if (nodeInBh == null) continue;
                 if (edz.Dest!.Status == 0 && edz.Weight < nodeInBh.key) {
                     bh.DecreasePriority(nodeInBh, (int)edz.Weight);
@@ -261,6 +262,12 @@ class Graph : IEnumerable {
                     nodeInMst!.Adj ??= new GraphEdge();
                     nodeInMst.Adj.Dest = MST.FindNode(curMin.Value);
                     nodeInMst.Adj.Weight = edz.Weight;
+                    // MST.PrintAll();
+                    // System.Console.WriteLine("---");
+                }
+                else {
+                    // System.Console.WriteLine($"{edz.Weight} > {nodeInBh.key}, {edz.Dest.Value}");
+                    // System.Console.WriteLine("----");
                 }
             }
         }
